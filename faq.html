@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ & Help - Mark II</title>
+    <link rel="stylesheet" href="../complete-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .faq-container {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+        
+        .faq-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+        
+        .faq-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .faq-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-section {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            padding: var(--space-32);
+            margin-bottom: var(--space-32);
+            text-align: center;
+        }
+        
+        .search-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-16);
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: var(--space-16) var(--space-20) var(--space-16) 50px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: var(--font-size-lg);
+            font-family: var(--font-family-base);
+            transition: border-color var(--duration-normal) var(--ease-standard);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(var(--color-teal-500-rgb), 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: var(--space-16);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-lg);
+        }
+        
+        .faq-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: var(--space-32);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .faq-nav {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            padding: var(--space-24);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .nav-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-20);
+        }
+        
+        .category-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .category-item {
+            margin-bottom: var(--space-8);
+        }
+        
+        .category-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-12) var(--space-16);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-base);
+            transition: all var(--duration-normal) var(--ease-standard);
+            font-size: var(--font-size-md);
+        }
+        
+        .category-link:hover {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+        
+        .category-link.active {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+        
+        .category-icon {
+            width: var(--space-16);
+            font-size: var(--font-size-sm);
+        }
+        
+        .faq-main {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            overflow: hidden;
+        }
+        
+        .category-section {
+            display: none;
+        }
+        
+        .category-section.active {
+            display: block;
+        }
+        
+        .section-header {
+            padding: var(--space-32);
+            border-bottom: 1px solid var(--color-card-border-inner);
+            background: var(--color-secondary);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-desc {
+            font-size: var(--font-size-md);
+            color: var(--color-text-secondary);
+        }
+        
+        .faq-list {
+            padding: var(--space-32);
+        }
+        
+        .faq-item {
+            border-bottom: 1px solid var(--color-card-border-inner);
+            margin-bottom: var(--space-20);
+            padding-bottom: var(--space-20);
+        }
+        
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .faq-question {
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            padding: 0;
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color var(--duration-normal) var(--ease-standard);
+        }
+        
+        .faq-question:hover {
+            color: var(--color-primary);
+        }
+        
+        .faq-icon {
+            transition: transform var(--duration-normal) var(--ease-standard);
+            color: var(--color-primary);
+        }
+        
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--duration-normal) var(--ease-standard);
+            padding: 0;
+            margin-top: 0;
+        }
+        
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+            padding-top: var(--space-16);
+        }
+        
+        .faq-answer p {
+            color: var(--color-text-secondary);
+            line-height: var(--line-height-normal);
+            margin-bottom: var(--space-12);
+        }
+        
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .help-links {
+            background: var(--color-secondary);
+            padding: var(--space-20);
+            border-top: 1px solid var(--color-card-border-inner);
+        }
+        
+        .help-links-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-12);
+        }
+        
+        .help-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            margin-right: var(--space-16);
+            transition: color var(--duration-normal) var(--ease-standard);
+        }
+        
+        .help-link:hover {
+            color: var(--color-primary-hover);
+        }
+        
+        .contact-section {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            padding: var(--space-32);
+            margin-top: var(--space-32);
+            text-align: center;
+        }
+        
+        .contact-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-16);
+        }
+        
+        .contact-desc {
+            font-size: var(--font-size-md);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-24);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-20);
+        }
+        
+        .contact-method {
+            padding: var(--space-20);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            transition: all var(--duration-normal) var(--ease-standard);
+            cursor: pointer;
+        }
+        
+        .contact-method:hover {
+            background: var(--color-secondary);
+            border-color: var(--color-primary);
+        }
+        
+        .contact-icon {
+            width: var(--space-32);
+            height: var(--space-32);
+            background: var(--color-primary);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-btn-primary-text);
+            font-size: var(--font-size-sm);
+            margin: 0 auto var(--space-16);
+        }
+        
+        .contact-method h4 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .contact-info {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .popular-topics {
+            background: var(--color-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-top: var(--space-32);
+        }
+        
+        .popular-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-16);
+            text-align: center;
+        }
+        
+        .topic-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-8);
+            justify-content: center;
+        }
+        
+        .topic-tag {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+            text-decoration: none;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .topic-tag:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .faq-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .faq-nav {
+                position: static;
+                margin-bottom: var(--space-24);
+            }
+            
+            .contact-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <span class="logo-text">Mark II</span>
+                </div>
+                
+                 <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="../company.html" class="nav-link">Company</a>
+                    <a href="../freelancer.html" class="nav-link">Freelancer</a>
+                    <a href="../create.html" class="nav-link">Create Bounty</a>
+                    <a href="../upload.html" class="nav-link">Upload</a>
+                    <a href="../payment.html" class="nav-link">Payment</a>
+                    <a href="../faq.html" class="nav-link">Help</a>
+                </nav>
+                
+                <div class="nav-item">
+                    <a href="../settings.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i> Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- FAQ Content -->
+    <div class="faq-container">
+        <div class="container">
+            <div class="faq-header">
+                <h1 class="faq-title">Help & Support</h1>
+                <p class="faq-subtitle">Find answers to common questions about Mark II bug bounty platform</p>
+            </div>
+
+            <!-- Search Section -->
+            <div class="search-section">
+                <h2 class="search-title">Search for answers</h2>
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Type your question here..." id="searchInput">
+                </div>
+            </div>
+
+            <div class="faq-content">
+                <!-- FAQ Navigation -->
+                <nav class="faq-nav">
+                    <h3 class="nav-title">Categories</h3>
+                    <ul class="category-list">
+                        <li class="category-item">
+                            <a href="#getting-started" class="category-link active" data-category="getting-started">
+                                <i class="fas fa-play category-icon"></i>
+                                Getting Started
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#bounties" class="category-link" data-category="bounties">
+                                <i class="fas fa-bug category-icon"></i>
+                                Bug Bounties
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#payments" class="category-link" data-category="payments">
+                                <i class="fas fa-coins category-icon"></i>
+                                Payments
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#security" class="category-link" data-category="security">
+                                <i class="fas fa-shield-alt category-icon"></i>
+                                Security
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#technical" class="category-link" data-category="technical">
+                                <i class="fas fa-code category-icon"></i>
+                                Technical Issues
+                            </a>
+                        </li>
+                        <li class="category-item">
+                            <a href="#account" class="category-link" data-category="account">
+                                <i class="fas fa-user category-icon"></i>
+                                Account Management
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- FAQ Main Content -->
+                <div class="faq-main">
+                    <!-- Getting Started Section -->
+                    <section class="category-section active" id="getting-started">
+                        <div class="section-header">
+                            <h2 class="section-title">Getting Started</h2>
+                            <p class="section-desc">Learn the basics of using Mark II bug bounty platform</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>What is Mark II and how does it work?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Mark II is a blockchain-powered bug bounty platform that connects security researchers with companies looking to secure their smart contracts and applications.</p>
+                                    <p>Companies post bounty programs with encrypted smart contracts, researchers submit encrypted vulnerability reports, and payments are automatically processed using cryptocurrency when bugs are verified.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How do I create an account?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Click the "Start now" button on the homepage and choose whether you're a security researcher or a company. You'll need to provide an email address and connect a cryptocurrency wallet.</p>
+                                    <p>For enhanced security, we recommend enabling two-factor authentication during the signup process.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>What's the difference between researcher and company accounts?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Researcher accounts can browse and participate in bug bounty programs, submit encrypted reports, and receive cryptocurrency rewards.</p>
+                                    <p>Company accounts can create bounty programs, upload smart contracts for testing, review submissions, and pay out rewards to researchers.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="help-links">
+                            <div class="help-links-title">Related articles:</div>
+                            <a href="#" class="help-link">Setting up your profile</a>
+                            <a href="#" class="help-link">Connecting your wallet</a>
+                            <a href="#" class="help-link">Platform overview</a>
+                        </div>
+                    </section>
+
+                    <!-- Bug Bounties Section -->
+                    <section class="category-section" id="bounties">
+                        <div class="section-header">
+                            <h2 class="section-title">Bug Bounties</h2>
+                            <p class="section-desc">Everything about participating in and creating bounty programs</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How do I find bug bounty programs to participate in?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Browse active programs on your dashboard or use the search function to find bounties that match your expertise. Programs are categorized by type (smart contracts, web apps, DeFi, etc.) and reward levels.</p>
+                                    <p>You can also set up notifications to be alerted when new programs in your areas of interest are posted.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>What should I include in a vulnerability report?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>A good report should include: a clear description of the vulnerability, steps to reproduce the issue, potential impact assessment, and recommended fixes.</p>
+                                    <p>Include screenshots, code snippets, or proof-of-concept if applicable. The more detailed and actionable your report, the better your chances of reward.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How are bug severity levels determined?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>We use a standard severity classification: Critical (complete system compromise), High (significant security impact), Medium (moderate security risk), and Low (minor issues or recommendations).</p>
+                                    <p>The final severity rating is determined by the company after reviewing your submission, which determines the reward amount.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Payments Section -->
+                    <section class="category-section" id="payments">
+                        <div class="section-header">
+                            <h2 class="section-title">Payments & Rewards</h2>
+                            <p class="section-desc">Understanding how payments work on the platform</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>What cryptocurrencies are supported for payments?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>We support major cryptocurrencies including Ethereum (ETH), USD Coin (USDC), Tether (USDT), Dai (DAI), and Bitcoin (BTC).</p>
+                                    <p>Most payments are processed on the Ethereum network, but we're expanding to other blockchains for lower transaction fees.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How long does it take to receive payment?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Once your vulnerability report is verified and accepted, payment is automatically processed within 24-48 hours.</p>
+                                    <p>The exact timing depends on network congestion and the specific cryptocurrency being used for the payout.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>Are there any fees deducted from rewards?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Mark II charges a small platform fee (typically 3-5%) which is deducted from the total reward amount. This covers platform maintenance, security, and payment processing.</p>
+                                    <p>You'll always see the net amount you'll receive before submitting your report.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Security Section -->
+                    <section class="category-section" id="security">
+                        <div class="section-header">
+                            <h2 class="section-title">Security & Privacy</h2>
+                            <p class="section-desc">How we protect your data and maintain platform security</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How are vulnerability reports kept confidential?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>All vulnerability reports are encrypted end-to-end using advanced cryptographic techniques. Only the company that posted the bounty can decrypt and read your report.</p>
+                                    <p>Reports are stored on a distributed system with no single point of failure, ensuring maximum security and availability.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>What happens if there's a dispute over a submission?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>We have a multi-step resolution process: first, direct communication between researcher and company is encouraged. If unresolved, our mediation team reviews the case.</p>
+                                    <p>For complex disputes, we may bring in external security experts to provide independent assessment of the vulnerability and its severity.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Technical Issues Section -->
+                    <section class="category-section" id="technical">
+                        <div class="section-header">
+                            <h2 class="section-title">Technical Issues</h2>
+                            <p class="section-desc">Troubleshooting common technical problems</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>My wallet won't connect. What should I do?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>First, ensure your wallet extension is installed and unlocked. Try refreshing the page and clicking connect again.</p>
+                                    <p>If issues persist, check that you're on the correct network (Ethereum mainnet) and that your wallet has sufficient ETH for transaction fees.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>I'm having trouble uploading my smart contract files</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Ensure your files are in supported formats (.sol, .js, .py, .vyper, .rs) and under the 10MB size limit per file.</p>
+                                    <p>Try clearing your browser cache, disable ad blockers temporarily, or try a different browser if the upload still fails.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Account Management Section -->
+                    <section class="category-section" id="account">
+                        <div class="section-header">
+                            <h2 class="section-title">Account Management</h2>
+                            <p class="section-desc">Managing your Mark II account and profile</p>
+                        </div>
+                        
+                        <div class="faq-list">
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>How do I update my profile information?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Go to Settings > Profile to update your name, bio, location, and other profile details. Changes are saved automatically.</p>
+                                    <p>Remember to keep your contact information current to ensure you receive important notifications about your submissions.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="faq-item">
+                                <button class="faq-question">
+                                    <span>Can I delete my account?</span>
+                                    <i class="fas fa-chevron-down faq-icon"></i>
+                                </button>
+                                <div class="faq-answer">
+                                    <p>Yes, you can delete your account from Settings > Privacy > Danger Zone. This action is permanent and cannot be undone.</p>
+                                    <p>Before deletion, make sure to withdraw any pending payments and download your data if needed. Active submissions will be preserved for companies but anonymized.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Popular Topics -->
+            <div class="popular-topics">
+                <h3 class="popular-title">Popular Topics</h3>
+                <div class="topic-tags">
+                    <a href="#" class="topic-tag">First submission</a>
+                    <a href="#" class="topic-tag">Payment issues</a>
+                    <a href="#" class="topic-tag">Wallet connection</a>
+                    <a href="#" class="topic-tag">Report encryption</a>
+                    <a href="#" class="topic-tag">Severity levels</a>
+                    <a href="#" class="topic-tag">Account verification</a>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="contact-section">
+                <h2 class="contact-title">Still need help?</h2>
+                <p class="contact-desc">Can't find what you're looking for? Our support team is here to help you get the most out of Mark II.</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h4>Live Chat</h4>
+                        <div class="contact-info">Get instant help from our support team</div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4>Email Support</h4>
+                        <div class="contact-info">support@markii.security</div>
+                    </div>
+                    
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h4>Community Discord</h4>
+                        <div class="contact-info">Join our researcher community</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FAQ accordion functionality
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isOpen = item.classList.contains('open');
+                
+                // Close all other items
+                faqItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('open');
+                    }
+                });
+                
+                // Toggle current item
+                if (isOpen) {
+                    item.classList.remove('open');
+                } else {
+                    item.classList.add('open');
+                }
+            });
+        });
+
+        // Category navigation
+        const categoryLinks = document.querySelectorAll('.category-link[data-category]');
+        const sections = document.querySelectorAll('.category-section');
+
+        categoryLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetCategory = this.getAttribute('data-category');
+                
+                // Update active link
+                categoryLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show target section
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById(targetCategory).classList.add('active');
+                
+                // Close all open FAQ items when switching categories
+                faqItems.forEach(item => item.classList.remove('open'));
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            if (searchTerm.length > 2) {
+                // Simple search through FAQ questions
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                    const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                    
+                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                        item.style.display = 'block';
+                        // Highlight matching terms could be added here
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            } else {
+                // Show all items when search is cleared
+                faqItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+            }
+        });
+
+        // Contact method interactions
+        const contactMethods = document.querySelectorAll('.contact-method');
+        contactMethods.forEach(method => {
+            method.addEventListener('click', function() {
+                const title = this.querySelector('h4').textContent;
+                
+                switch(title) {
+                    case 'Live Chat':
+                        alert('Opening live chat...');
+                        break;
+                    case 'Email Support':
+                        window.location.href = 'mailto:support@markii.security';
+                        break;
+                    case 'Community Discord':
+                        alert('Opening Discord invite...');
+                        break;
+                }
+            });
+        });
+
+        // Popular topic tags
+        const topicTags = document.querySelectorAll('.topic-tag');
+        topicTags.forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                const topic = this.textContent.toLowerCase();
+                
+                // Set search input and trigger search
+                searchInput.value = topic;
+                searchInput.dispatchEvent(new Event('input'));
+            });
+        });
+    </script>
+
+    <script src="../complete-script.js"></script>
+</body>
+</html>

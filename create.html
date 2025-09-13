@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Bounty - Mark II</title>
+    <link rel="stylesheet" href="../complete-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .create-container {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+        
+        .create-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+        
+        .create-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .create-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            overflow: hidden;
+        }
+        
+        .form-section {
+            padding: var(--space-32);
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-16);
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+        
+        .section-icon {
+            width: var(--space-32);
+            height: var(--space-32);
+            background: var(--color-primary);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-btn-primary-text);
+            font-size: var(--font-size-sm);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-20);
+            margin-bottom: var(--space-20);
+        }
+        
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-label {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            padding: var(--space-12) var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: var(--font-size-md);
+            font-family: var(--font-family-base);
+            transition: border-color var(--duration-normal) var(--ease-standard);
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(var(--color-teal-500-rgb), 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-help {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-top: var(--space-4);
+        }
+        
+        .reward-input {
+            position: relative;
+        }
+        
+        .reward-symbol {
+            position: absolute;
+            left: var(--space-16);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .reward-input .form-input {
+            padding-left: 40px;
+        }
+        
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-8);
+            padding: var(--space-8);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background: var(--color-background);
+            min-height: 60px;
+        }
+        
+        .tag {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            padding: var(--space-4) var(--space-12);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+        
+        .tag-remove {
+            background: none;
+            border: none;
+            color: var(--color-btn-primary-text);
+            cursor: pointer;
+            font-size: var(--font-size-xs);
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tag-remove:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .tag-input {
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--color-text);
+            font-size: var(--font-size-md);
+            flex: 1;
+            min-width: 100px;
+            padding: var(--space-8);
+        }
+        
+        .file-upload {
+            border: 2px dashed var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-32);
+            text-align: center;
+            transition: all var(--duration-normal) var(--ease-standard);
+            cursor: pointer;
+        }
+        
+        .file-upload:hover,
+        .file-upload.dragover {
+            border-color: var(--color-primary);
+            background: rgba(var(--color-teal-500-rgb), 0.05);
+        }
+        
+        .file-upload-icon {
+            font-size: var(--font-size-4xl);
+            color: var(--color-primary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .file-upload-text {
+            font-size: var(--font-size-lg);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .file-upload-hint {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .uploaded-files {
+            margin-top: var(--space-16);
+        }
+        
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-12) var(--space-16);
+            background: var(--color-secondary);
+            border-radius: var(--radius-base);
+            margin-bottom: var(--space-8);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+        
+        .file-icon {
+            color: var(--color-primary);
+        }
+        
+        .file-details h4 {
+            font-size: var(--font-size-md);
+            color: var(--color-text);
+            margin: 0;
+        }
+        
+        .file-size {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .remove-file {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            padding: var(--space-4);
+            border-radius: var(--radius-base);
+            transition: color var(--duration-normal) var(--ease-standard);
+        }
+        
+        .remove-file:hover {
+            color: var(--color-error);
+        }
+        
+        .form-actions {
+            padding: var(--space-32);
+            background: var(--color-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-16);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: var(--space-16);
+        }
+        
+        .save-draft {
+            background: var(--color-secondary);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        
+        .save-draft:hover {
+            background: var(--color-secondary-hover);
+        }
+        
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn-group {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <span class="logo-text">Mark II</span>
+                </div>
+                
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="../company.html" class="nav-link">Company</a>
+                    <a href="../create.html" class="nav-link">Create Bounty</a>
+                    <a href="../payment.html" class="nav-link">Payment</a>
+                    <a href="../faq.html" class="nav-link">Help</a>
+                </nav>
+                
+                <div class="nav-item">
+                    <a href="../settings.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i> Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Create Bounty Form -->
+    <div class="create-container">
+        <div class="container">
+            <div class="create-header">
+                <h1 class="create-title">Create Bug Bounty Program</h1>
+                <p class="create-subtitle">Set up a comprehensive security testing program for your smart contracts and applications</p>
+            </div>
+
+            <form class="form-container" id="createBountyForm">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        Basic Information
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Program Name</label>
+                            <input type="text" class="form-input" placeholder="e.g., DeFi Protocol Security Audit" required>
+                            <div class="form-help">Choose a clear, descriptive name for your bounty program</div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Program Type</label>
+                            <select class="form-select" required>
+                                <option value="">Select type</option>
+                                <option value="smart-contract">Smart Contract</option>
+                                <option value="web-app">Web Application</option>
+                                <option value="mobile-app">Mobile Application</option>
+                                <option value="blockchain">Blockchain Protocol</option>
+                                <option value="defi">DeFi Platform</option>
+                                <option value="nft">NFT Marketplace</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea" placeholder="Provide detailed information about your project, what you're looking for, and any specific areas of concern..." required></textarea>
+                            <div class="form-help">Include project overview, scope, and specific security concerns</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" class="form-input" required>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">End Date</label>
+                            <input type="date" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reward Structure -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        Reward Structure
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Critical Vulnerability Reward</label>
+                            <div class="reward-input">
+                                <span class="reward-symbol">$</span>
+                                <input type="number" class="form-input" placeholder="5000" required>
+                            </div>
+                            <div class="form-help">Reward for critical security vulnerabilities</div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">High Vulnerability Reward</label>
+                            <div class="reward-input">
+                                <span class="reward-symbol">$</span>
+                                <input type="number" class="form-input" placeholder="2500" required>
+                            </div>
+                            <div class="form-help">Reward for high severity issues</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Medium Vulnerability Reward</label>
+                            <div class="reward-input">
+                                <span class="reward-symbol">$</span>
+                                <input type="number" class="form-input" placeholder="1000" required>
+                            </div>
+                            <div class="form-help">Reward for medium severity issues</div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Low Vulnerability Reward</label>
+                            <div class="reward-input">
+                                <span class="reward-symbol">$</span>
+                                <input type="number" class="form-input" placeholder="250" required>
+                            </div>
+                            <div class="form-help">Reward for low severity issues</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label class="form-label">Payment Method</label>
+                            <select class="form-select" required>
+                                <option value="">Select payment method</option>
+                                <option value="eth">Ethereum (ETH)</option>
+                                <option value="usdc">USD Coin (USDC)</option>
+                                <option value="usdt">Tether (USDT)</option>
+                                <option value="dai">Dai (DAI)</option>
+                                <option value="btc">Bitcoin (BTC)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scope & Requirements -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-target"></i>
+                        </div>
+                        Scope & Requirements
+                    </h2>
+                    
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label class="form-label">In Scope</label>
+                            <textarea class="form-textarea" placeholder="List what should be tested: smart contracts, specific functions, web interfaces, APIs, etc." required></textarea>
+                            <div class="form-help">Clearly define what researchers should focus on</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label class="form-label">Out of Scope</label>
+                            <textarea class="form-textarea" placeholder="List what should NOT be tested: known issues, third-party integrations, etc."></textarea>
+                            <div class="form-help">Specify areas that should not be tested</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label class="form-label">Tags</label>
+                            <div class="tags-input" id="tagsInput">
+                                <input type="text" class="tag-input" placeholder="Add tags (e.g., defi, smart-contract, solidity)">
+                            </div>
+                            <div class="form-help">Add relevant tags to help researchers find your program</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-upload"></i>
+                        </div>
+                        Smart Contract & Documentation
+                    </h2>
+                    
+                    <div class="form-row full">
+                        <div class="form-field">
+                            <label class="form-label">Upload Files</label>
+                            <div class="file-upload" id="fileUpload">
+                                <div class="file-upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div class="file-upload-text">Drop your files here or click to browse</div>
+                                <div class="file-upload-hint">Supported formats: .sol, .js, .py, .md, .pdf (Max 10MB per file)</div>
+                                <input type="file" class="file-input" id="fileInput" multiple accept=".sol,.js,.py,.md,.pdf,.txt,.zip">
+                            </div>
+                            <div class="uploaded-files" id="uploadedFiles"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label class="form-label">Repository URL</label>
+                            <input type="url" class="form-input" placeholder="https://github.com/username/project">
+                            <div class="form-help">Link to your public repository (optional)</div>
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Documentation URL</label>
+                            <input type="url" class="form-input" placeholder="https://docs.yourproject.com">
+                            <div class="form-help">Link to project documentation (optional)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <div class="progress-indicator">
+                        <i class="fas fa-save"></i>
+                        Auto-saving draft...
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn--outline save-draft">Save Draft</button>
+                        <button type="submit" class="btn btn--primary">Launch Bounty Program</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tag input functionality
+        const tagsInput = document.getElementById('tagsInput');
+        const tagInput = tagsInput.querySelector('.tag-input');
+        let tags = [];
+
+        tagInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                addTag(this.value.trim());
+                this.value = '';
+            }
+        });
+
+        function addTag(tagText) {
+            if (tagText && !tags.includes(tagText)) {
+                tags.push(tagText);
+                renderTags();
+            }
+        }
+
+        function removeTag(tagText) {
+            tags = tags.filter(tag => tag !== tagText);
+            renderTags();
+        }
+
+        function renderTags() {
+            const existingTags = tagsInput.querySelectorAll('.tag');
+            existingTags.forEach(tag => tag.remove());
+
+            tags.forEach(tagText => {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.innerHTML = `
+                    ${tagText}
+                    <button type="button" class="tag-remove" onclick="removeTag('${tagText}')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                tagsInput.insertBefore(tag, tagInput);
+            });
+        }
+
+        // File upload functionality
+        const fileUpload = document.getElementById('fileUpload');
+        const fileInput = document.getElementById('fileInput');
+        const uploadedFiles = document.getElementById('uploadedFiles');
+        let files = [];
+
+        fileUpload.addEventListener('click', () => fileInput.click());
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragover');
+        });
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(newFiles) {
+            Array.from(newFiles).forEach(file => {
+                if (file.size <= 10 * 1024 * 1024) { // 10MB limit
+                    files.push(file);
+                    addFileToDisplay(file);
+                }
+            });
+        }
+
+        function addFileToDisplay(file) {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'uploaded-file';
+            fileDiv.innerHTML = `
+                <div class="file-info">
+                    <i class="fas fa-file-code file-icon"></i>
+                    <div class="file-details">
+                        <h4>${file.name}</h4>
+                        <div class="file-size">${(file.size / 1024).toFixed(1)} KB</div>
+                    </div>
+                </div>
+                <button type="button" class="remove-file" onclick="removeFile('${file.name}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            uploadedFiles.appendChild(fileDiv);
+        }
+
+        function removeFile(fileName) {
+            files = files.filter(file => file.name !== fileName);
+            const fileElements = uploadedFiles.querySelectorAll('.uploaded-file');
+            fileElements.forEach(element => {
+                if (element.querySelector('h4').textContent === fileName) {
+                    element.remove();
+                }
+            });
+        }
+
+        // Form submission
+        document.getElementById('createBountyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Here you would normally send the form data to your backend
+            alert('Bounty program created successfully! Redirecting to dashboard...');
+            // window.location.href = 'company.html';
+        });
+
+        // Auto-save draft functionality
+        setInterval(() => {
+            console.log('Auto-saving draft...');
+        }, 30000); // Auto-save every 30 seconds
+    </script>
+
+    <script src="complete-script.js"></script>
+</body>
+</html>

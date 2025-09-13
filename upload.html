@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Contract - Mark II</title>
+    <link rel="stylesheet" href="../complete-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .upload-container {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+        
+        .upload-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+        
+        .upload-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .upload-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .upload-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-32);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .main-upload {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            overflow: hidden;
+        }
+        
+        .upload-section {
+            padding: var(--space-32);
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .upload-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-20);
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+        
+        .section-icon {
+            width: var(--space-32);
+            height: var(--space-32);
+            background: var(--color-primary);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-btn-primary-text);
+            font-size: var(--font-size-sm);
+        }
+        
+        .drag-drop-area {
+            border: 3px dashed var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 60px var(--space-32);
+            text-align: center;
+            transition: all var(--duration-normal) var(--ease-standard);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .drag-drop-area:hover,
+        .drag-drop-area.dragover {
+            border-color: var(--color-primary);
+            background: rgba(var(--color-teal-500-rgb), 0.05);
+        }
+        
+        .drag-drop-area.error {
+            border-color: var(--color-error);
+            background: rgba(var(--color-error-rgb), 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--color-primary);
+            margin-bottom: var(--space-20);
+        }
+        
+        .upload-text {
+            font-size: var(--font-size-xl);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .upload-hint {
+            font-size: var(--font-size-md);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-20);
+        }
+        
+        .upload-button {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            padding: var(--space-12) var(--space-24);
+            border-radius: var(--radius-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .upload-button:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .uploaded-contracts {
+            margin-top: var(--space-24);
+        }
+        
+        .contract-item {
+            background: var(--color-secondary);
+            border: 1px solid var(--color-card-border-inner);
+            border-radius: var(--radius-base);
+            padding: var(--space-20);
+            margin-bottom: var(--space-16);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .contract-item:hover {
+            background: var(--color-secondary-hover);
+            border-color: var(--color-primary);
+        }
+        
+        .contract-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-12);
+        }
+        
+        .contract-info h4 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin: 0 0 var(--space-4) 0;
+        }
+        
+        .contract-meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .contract-actions {
+            display: flex;
+            gap: var(--space-8);
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            padding: var(--space-6);
+            border-radius: var(--radius-base);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .action-btn:hover {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+        
+        .action-btn.delete:hover {
+            color: var(--color-error);
+        }
+        
+        .contract-preview {
+            background: var(--color-background);
+            border-radius: var(--radius-base);
+            padding: var(--space-16);
+            font-family: var(--font-family-mono);
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        
+        .analysis-results {
+            margin-top: var(--space-20);
+            padding: var(--space-16);
+            background: rgba(var(--color-success-rgb), 0.1);
+            border: 1px solid rgba(var(--color-success-rgb), 0.2);
+            border-radius: var(--radius-base);
+        }
+        
+        .analysis-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-success);
+            margin-bottom: var(--space-8);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+        
+        .analysis-item {
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+            margin-bottom: var(--space-4);
+        }
+        
+        .sidebar-panel {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .panel-header {
+            padding: var(--space-20);
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .panel-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .panel-body {
+            padding: var(--space-20);
+        }
+        
+        .supported-formats {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .format-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-8) 0;
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .format-item:last-child {
+            border-bottom: none;
+        }
+        
+        .format-icon {
+            width: var(--space-24);
+            height: var(--space-24);
+            background: var(--color-primary);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-btn-primary-text);
+            font-size: var(--font-size-xs);
+        }
+        
+        .format-info h5 {
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+            margin: 0;
+            font-weight: var(--font-weight-medium);
+        }
+        
+        .format-desc {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+        
+        .security-tips {
+            background: rgba(var(--color-warning-rgb), 0.1);
+            border: 1px solid rgba(var(--color-warning-rgb), 0.2);
+            border-radius: var(--radius-base);
+            padding: var(--space-16);
+            margin-top: var(--space-20);
+        }
+        
+        .tips-title {
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-warning);
+            margin-bottom: var(--space-12);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+        
+        .tips-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .tips-list li {
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+            padding-left: var(--space-20);
+            position: relative;
+        }
+        
+        .tips-list li::before {
+            content: '•';
+            color: var(--color-warning);
+            position: absolute;
+            left: 0;
+        }
+        
+        .upload-progress {
+            margin-top: var(--space-16);
+            padding: var(--space-16);
+            background: rgba(var(--color-primary-rgb), 0.1);
+            border-radius: var(--radius-base);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--color-secondary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--space-8);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+            transition: width var(--duration-normal) var(--ease-standard);
+        }
+        
+        .progress-text {
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .upload-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .drag-drop-area {
+                padding: 40px var(--space-20);
+            }
+            
+            .upload-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <span class="logo-text">Mark II</span>
+                </div>
+                
+                 <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="../freelancer.html" class="nav-link">Freelancer</a>
+                    <a href="../upload.html" class="nav-link">Upload</a>
+                    <a href="../payment.html" class="nav-link">Payment</a>
+                    <a href="../faq.html" class="nav-link">Help</a>
+                </nav>
+                
+                <div class="nav-item">
+                    <a href="../settings.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i> Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Upload Content -->
+    <div class="upload-container">
+        <div class="container">
+            <div class="upload-header">
+                <h1 class="upload-title">Upload Smart Contracts</h1>
+                <p class="upload-subtitle">Upload your smart contracts for security analysis and bounty program integration</p>
+            </div>
+
+            <div class="upload-content">
+                <div class="main-upload">
+                    <!-- Upload Section -->
+                    <div class="upload-section">
+                        <h2 class="section-title">
+                            <div class="section-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            Contract Upload
+                        </h2>
+                        
+                        <div class="drag-drop-area" id="dragDropArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-file-code"></i>
+                            </div>
+                            <div class="upload-text">Drop your smart contracts here</div>
+                            <div class="upload-hint">or click to browse files</div>
+                            <button type="button" class="upload-button" id="uploadButton">Choose Files</button>
+                            <input type="file" id="fileInput" class="file-input" multiple accept=".sol,.js,.py,.vyper,.rs,.go">
+                        </div>
+
+                        <div class="upload-progress" id="uploadProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                            </div>
+                            <div class="progress-text" id="progressText">Uploading...</div>
+                        </div>
+                    </div>
+
+                    <!-- Uploaded Contracts -->
+                    <div class="upload-section">
+                        <h2 class="section-title">
+                            <div class="section-icon">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            Uploaded Contracts
+                        </h2>
+                        
+                        <div class="uploaded-contracts" id="uploadedContracts">
+                            <!-- Sample contract -->
+                            <div class="contract-item">
+                                <div class="contract-header">
+                                    <div class="contract-info">
+                                        <h4>TokenContract.sol</h4>
+                                        <div class="contract-meta">Uploaded 2 hours ago • 15.2 KB • Solidity</div>
+                                    </div>
+                                    <div class="contract-actions">
+                                        <button class="action-btn" title="View">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn" title="Download">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                        <button class="action-btn delete" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="contract-preview">pragma solidity ^0.8.0;
+
+contract Token {
+    string public name = "MyToken";
+    string public symbol = "MTK";
+    uint8 public decimals = 18;
+    uint256 public totalSupply = 1000000 * 10**decimals;
+    
+    mapping(address => uint256) public balances;
+    
+    constructor() {
+        balances[msg.sender] = totalSupply;
+    }
+}</div>
+
+                                <div class="analysis-results">
+                                    <div class="analysis-title">
+                                        <i class="fas fa-check-circle"></i>
+                                        Analysis Complete
+                                    </div>
+                                    <div class="analysis-item">✓ Syntax validation passed</div>
+                                    <div class="analysis-item">✓ No obvious vulnerabilities detected</div>
+                                    <div class="analysis-item">⚠ Consider adding access controls</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Supported Formats</h3>
+                        <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin: 0;">Upload various smart contract formats</p>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="supported-formats">
+                            <li class="format-item">
+                                <div class="format-icon">
+                                    <i class="fab fa-ethereum"></i>
+                                </div>
+                                <div class="format-info">
+                                    <h5>Solidity (.sol)</h5>
+                                    <div class="format-desc">Ethereum smart contracts</div>
+                                </div>
+                            </li>
+                            <li class="format-item">
+                                <div class="format-icon">
+                                    <i class="fab fa-python"></i>
+                                </div>
+                                <div class="format-info">
+                                    <h5>Vyper (.vy)</h5>
+                                    <div class="format-desc">Pythonic smart contracts</div>
+                                </div>
+                            </li>
+                            <li class="format-item">
+                                <div class="format-icon">
+                                    <i class="fab fa-js"></i>
+                                </div>
+                                <div class="format-info">
+                                    <h5>JavaScript (.js)</h5>
+                                    <div class="format-desc">Web3 applications</div>
+                                </div>
+                            </li>
+                            <li class="format-item">
+                                <div class="format-icon">
+                                    <i class="fab fa-rust"></i>
+                                </div>
+                                <div class="format-info">
+                                    <h5>Rust (.rs)</h5>
+                                    <div class="format-desc">Solana, Near protocols</div>
+                                </div>
+                            </li>
+                        </ul>
+                        
+                        <div class="security-tips">
+                            <div class="tips-title">
+                                <i class="fas fa-shield-alt"></i>
+                                Security Tips
+                            </div>
+                            <ul class="tips-list">
+                                <li>Remove private keys and sensitive data before uploading</li>
+                                <li>Use test contracts for initial analysis</li>
+                                <li>Enable two-factor authentication on your account</li>
+                                <li>Review uploaded contracts before making them public</li>
+                                <li>Keep backups of your original contract files</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File upload functionality
+        const dragDropArea = document.getElementById('dragDropArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadedContracts = document.getElementById('uploadedContracts');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+
+        let uploadedFiles = [];
+
+        // Event listeners
+        uploadButton.addEventListener('click', () => fileInput.click());
+        dragDropArea.addEventListener('click', () => fileInput.click());
+
+        dragDropArea.addEventListener('dragover', handleDragOver);
+        dragDropArea.addEventListener('dragleave', handleDragLeave);
+        dragDropArea.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            dragDropArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            dragDropArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            dragDropArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            processFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            processFiles(files);
+        }
+
+        function processFiles(files) {
+            Array.from(files).forEach(file => {
+                if (validateFile(file)) {
+                    uploadFile(file);
+                }
+            });
+        }
+
+        function validateFile(file) {
+            const allowedTypes = ['.sol', '.js', '.py', '.vyper', '.rs', '.go'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedTypes.includes(fileExtension)) {
+                showError(`File type ${fileExtension} not supported`);
+                return false;
+            }
+
+            if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                showError(`File ${file.name} is too large (max 10MB)`);
+                return false;
+            }
+
+            return true;
+        }
+
+        function uploadFile(file) {
+            showProgress();
+            
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideProgress();
+                        addContractToList(file);
+                    }, 500);
+                }
+                updateProgress(progress);
+            }, 200);
+        }
+
+        function showProgress() {
+            uploadProgress.style.display = 'block';
+        }
+
+        function hideProgress() {
+            uploadProgress.style.display = 'none';
+        }
+
+        function updateProgress(progress) {
+            progressFill.style.width = `${progress}%`;
+            progressText.textContent = `Uploading... ${Math.round(progress)}%`;
+        }
+
+        function addContractToList(file) {
+            const contractDiv = document.createElement('div');
+            contractDiv.className = 'contract-item';
+            
+            const fileSize = (file.size / 1024).toFixed(1);
+            const fileType = getFileType(file.name);
+            
+            contractDiv.innerHTML = `
+                <div class="contract-header">
+                    <div class="contract-info">
+                        <h4>${file.name}</h4>
+                        <div class="contract-meta">Just uploaded • ${fileSize} KB • ${fileType}</div>
+                    </div>
+                    <div class="contract-actions">
+                        <button class="action-btn" title="View" onclick="viewContract('${file.name}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Download" onclick="downloadContract('${file.name}')">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="action-btn delete" title="Delete" onclick="deleteContract('${file.name}', this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="contract-preview">// Contract preview will be available after analysis
+// File: ${file.name}
+// Size: ${fileSize} KB
+// Type: ${fileType}</div>
+
+                <div class="analysis-results">
+                    <div class="analysis-title">
+                        <i class="fas fa-clock"></i>
+                        Analysis in Progress
+                    </div>
+                    <div class="analysis-item">⏳ Parsing contract structure...</div>
+                    <div class="analysis-item">⏳ Running security checks...</div>
+                    <div class="analysis-item">⏳ Generating vulnerability report...</div>
+                </div>
+            `;
+
+            uploadedContracts.appendChild(contractDiv);
+            uploadedFiles.push(file);
+
+            // Simulate analysis completion
+            setTimeout(() => {
+                completeAnalysis(contractDiv);
+            }, 3000);
+        }
+
+        function completeAnalysis(contractDiv) {
+            const analysisResults = contractDiv.querySelector('.analysis-results');
+            analysisResults.innerHTML = `
+                <div class="analysis-title">
+                    <i class="fas fa-check-circle"></i>
+                    Analysis Complete
+                </div>
+                <div class="analysis-item">✓ Syntax validation passed</div>
+                <div class="analysis-item">✓ No critical vulnerabilities detected</div>
+                <div class="analysis-item">⚠ Consider adding input validation</div>
+                <div class="analysis-item">ℹ Ready for bounty program</div>
+            `;
+        }
+
+        function getFileType(filename) {
+            const extension = filename.split('.').pop().toLowerCase();
+            const types = {
+                'sol': 'Solidity',
+                'js': 'JavaScript',
+                'py': 'Python',
+                'vyper': 'Vyper',
+                'rs': 'Rust',
+                'go': 'Go'
+            };
+            return types[extension] || 'Unknown';
+        }
+
+        function viewContract(filename) {
+            alert(`Viewing contract: ${filename}`);
+        }
+
+        function downloadContract(filename) {
+            alert(`Downloading contract: ${filename}`);
+        }
+
+        function deleteContract(filename, button) {
+            if (confirm(`Are you sure you want to delete ${filename}?`)) {
+                const contractItem = button.closest('.contract-item');
+                contractItem.remove();
+                uploadedFiles = uploadedFiles.filter(file => file.name !== filename);
+            }
+        }
+
+        function showError(message) {
+            dragDropArea.classList.add('error');
+            setTimeout(() => {
+                dragDropArea.classList.remove('error');
+            }, 3000);
+            
+            // You could also show a toast notification here
+            alert(message);
+        }
+    </script>
+
+    <script src="../complete-script.js"></script>
+</body>
+</html>

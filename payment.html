@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Settings - Mark II</title>
+    <link rel="stylesheet" href="../complete-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .payment-container {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+        
+        .payment-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+        
+        .payment-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .payment-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .payment-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-32);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .main-settings {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-24);
+        }
+        
+        .settings-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: var(--space-24);
+            border-bottom: 1px solid var(--color-card-border-inner);
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+        
+        .card-icon {
+            width: var(--space-32);
+            height: var(--space-32);
+            background: var(--color-primary);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-btn-primary-text);
+            font-size: var(--font-size-sm);
+        }
+        
+        .card-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin: 0;
+        }
+        
+        .card-body {
+            padding: var(--space-24);
+        }
+        
+        .wallet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+        
+        .wallet-option {
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            position: relative;
+        }
+        
+        .wallet-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(var(--color-teal-500-rgb), 0.05);
+        }
+        
+        .wallet-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(var(--color-teal-500-rgb), 0.1);
+        }
+        
+        .wallet-option.selected::after {
+            content: '';
+            position: absolute;
+            top: var(--space-8);
+            right: var(--space-8);
+            width: var(--space-16);
+            height: var(--space-16);
+            background: var(--color-primary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .wallet-option.selected::before {
+            content: '✓';
+            position: absolute;
+            top: var(--space-8);
+            right: var(--space-8);
+            width: var(--space-16);
+            height: var(--space-16);
+            color: white;
+            font-size: var(--font-size-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        
+        .wallet-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto var(--space-12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-secondary);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-2xl);
+            color: var(--color-primary);
+        }
+        
+        .wallet-name {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-4);
+        }
+        
+        .wallet-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .address-input {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-16);
+        }
+        
+        .address-input input {
+            flex: 1;
+            padding: var(--space-12) var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: var(--font-size-md);
+            font-family: var(--font-family-mono);
+        }
+        
+        .verify-btn {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            padding: var(--space-12) var(--space-20);
+            border-radius: var(--radius-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+            white-space: nowrap;
+        }
+        
+        .verify-btn:hover {
+            background: var(--color-primary-hover);
+        }
+        
+        .currency-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-12);
+        }
+        
+        .currency-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-16);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .currency-item:hover {
+            background: var(--color-secondary);
+        }
+        
+        .currency-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+        
+        .currency-icon {
+            width: var(--space-32);
+            height: var(--space-32);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-sm);
+        }
+        
+        .currency-icon.eth {
+            background: #627eea;
+            color: white;
+        }
+        
+        .currency-icon.usdc {
+            background: #2775ca;
+            color: white;
+        }
+        
+        .currency-icon.usdt {
+            background: #26a17b;
+            color: white;
+        }
+        
+        .currency-icon.dai {
+            background: #f5ac37;
+            color: white;
+        }
+        
+        .currency-icon.btc {
+            background: #f7931a;
+            color: white;
+        }
+        
+        .currency-details h4 {
+            font-size: var(--font-size-md);
+            color: var(--color-text);
+            margin: 0 0 var(--space-4) 0;
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .currency-network {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .currency-toggle {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-border);
+            transition: all var(--duration-normal) var(--ease-standard);
+            border-radius: var(--radius-full);
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background: white;
+            transition: all var(--duration-normal) var(--ease-standard);
+            border-radius: var(--radius-full);
+        }
+        
+        .toggle-input:checked + .toggle-slider {
+            background: var(--color-primary);
+        }
+        
+        .toggle-input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .notification-settings {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+        }
+        
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-16) 0;
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        
+        .notification-info h4 {
+            font-size: var(--font-size-md);
+            color: var(--color-text);
+            margin: 0 0 var(--space-4) 0;
+        }
+        
+        .notification-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .sidebar-panel {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .panel-header {
+            padding: var(--space-20);
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .panel-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .panel-body {
+            padding: var(--space-20);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-16);
+            margin-bottom: var(--space-20);
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: var(--space-16);
+            background: var(--color-secondary);
+            border-radius: var(--radius-base);
+        }
+        
+        .stat-value {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: var(--space-4);
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .recent-transactions {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-12) 0;
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-info {
+            flex: 1;
+        }
+        
+        .transaction-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text);
+            margin-bottom: var(--space-2);
+        }
+        
+        .transaction-time {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+        
+        .transaction-amount {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-success);
+        }
+        
+        .save-settings {
+            position: sticky;
+            bottom: 0;
+            padding: var(--space-24);
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-card-border-inner);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-16);
+        }
+        
+        @media (max-width: 768px) {
+            .payment-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .wallet-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <span class="logo-text">Mark II</span>
+                </div>
+                
+                 <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="../company.html" class="nav-link">Company</a>
+                    <a href="../create.html" class="nav-link">Create Bounty</a>
+                    <a href="../payment.html" class="nav-link">Payment</a>
+                    <a href="../faq.html" class="nav-link">Help</a>
+                </nav>
+                
+                <div class="nav-item">
+                    <a href="../settings.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i> Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Payment Settings Content -->
+    <div class="payment-container">
+        <div class="container">
+            <div class="payment-header">
+                <h1 class="payment-title">Payment Settings</h1>
+                <p class="payment-subtitle">Configure your wallet connections and payment preferences for bounty rewards</p>
+            </div>
+
+            <div class="payment-content">
+                <div class="main-settings">
+                    <!-- Wallet Connection -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <h2 class="card-title">Wallet Connection</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="wallet-grid">
+                                <div class="wallet-option selected">
+                                    <div class="wallet-icon">
+                                        <i class="fab fa-ethereum"></i>
+                                    </div>
+                                    <div class="wallet-name">MetaMask</div>
+                                    <div class="wallet-desc">Most popular Ethereum wallet</div>
+                                </div>
+                                <div class="wallet-option">
+                                    <div class="wallet-icon">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="wallet-name">WalletConnect</div>
+                                    <div class="wallet-desc">Connect any wallet</div>
+                                </div>
+                                <div class="wallet-option">
+                                    <div class="wallet-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="wallet-name">Coinbase</div>
+                                    <div class="wallet-desc">Secure and user-friendly</div>
+                                </div>
+                                <div class="wallet-option">
+                                    <div class="wallet-icon">
+                                        <i class="fas fa-cube"></i>
+                                    </div>
+                                    <div class="wallet-name">Ledger</div>
+                                    <div class="wallet-desc">Hardware wallet security</div>
+                                </div>
+                            </div>
+                            
+                            <div class="address-input">
+                                <input type="text" placeholder="0x742d35Cc6b34d78C12345678901234567890ABCD" readonly value="0x742d35Cc6b34d78C12345678901234567890ABCD">
+                                <button class="verify-btn">
+                                    <i class="fas fa-check-circle"></i> Verified
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supported Currencies -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                            <h2 class="card-title">Payment Currencies</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="currency-list">
+                                <div class="currency-item">
+                                    <div class="currency-info">
+                                        <div class="currency-icon eth">ETH</div>
+                                        <div class="currency-details">
+                                            <h4>Ethereum</h4>
+                                            <div class="currency-network">Ethereum Network</div>
+                                        </div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="currency-item">
+                                    <div class="currency-info">
+                                        <div class="currency-icon usdc">USDC</div>
+                                        <div class="currency-details">
+                                            <h4>USD Coin</h4>
+                                            <div class="currency-network">Ethereum Network</div>
+                                        </div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="currency-item">
+                                    <div class="currency-info">
+                                        <div class="currency-icon usdt">USDT</div>
+                                        <div class="currency-details">
+                                            <h4>Tether</h4>
+                                            <div class="currency-network">Ethereum Network</div>
+                                        </div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="currency-item">
+                                    <div class="currency-info">
+                                        <div class="currency-icon dai">DAI</div>
+                                        <div class="currency-details">
+                                            <h4>Dai Stablecoin</h4>
+                                            <div class="currency-network">Ethereum Network</div>
+                                        </div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="currency-item">
+                                    <div class="currency-info">
+                                        <div class="currency-icon btc">BTC</div>
+                                        <div class="currency-details">
+                                            <h4>Bitcoin</h4>
+                                            <div class="currency-network">Bitcoin Network</div>
+                                        </div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Notifications -->
+                    <div class="settings-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h2 class="card-title">Payment Notifications</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="notification-settings">
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <h4>Payment Received</h4>
+                                        <div class="notification-desc">Get notified when you receive a bounty payment</div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <h4>Payment Sent</h4>
+                                        <div class="notification-desc">Get notified when you send a reward payment</div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <h4>Low Balance Warning</h4>
+                                        <div class="notification-desc">Alert when wallet balance is low for payments</div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <h4>Transaction Confirmation</h4>
+                                        <div class="notification-desc">Confirm each transaction before execution</div>
+                                    </div>
+                                    <label class="currency-toggle">
+                                        <input type="checkbox" class="toggle-input" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar-panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Payment Overview</h3>
+                        <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin: 0;">Your payment statistics</p>
+                    </div>
+                    <div class="panel-body">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-value">$12.5K</span>
+                                <span class="stat-label">Total Paid</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">47</span>
+                                <span class="stat-label">Transactions</span>
+                            </div>
+                        </div>
+                        
+                        <h4 style="font-size: var(--font-size-md); font-weight: var(--font-weight-semibold); margin-bottom: var(--space-12); color: var(--color-text);">Recent Transactions</h4>
+                        <ul class="recent-transactions">
+                            <li class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-desc">Reward payment sent</div>
+                                    <div class="transaction-time">2 hours ago</div>
+                                </div>
+                                <div class="transaction-amount">-$2,500</div>
+                            </li>
+                            <li class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-desc">Reward payment sent</div>
+                                    <div class="transaction-time">1 day ago</div>
+                                </div>
+                                <div class="transaction-amount">-$1,200</div>
+                            </li>
+                            <li class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-desc">Wallet funded</div>
+                                    <div class="transaction-time">3 days ago</div>
+                                </div>
+                                <div class="transaction-amount">+$10,000</div>
+                            </li>
+                            <li class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-desc">Reward payment sent</div>
+                                    <div class="transaction-time">5 days ago</div>
+                                </div>
+                                <div class="transaction-amount">-$800</div>
+                            </li>
+                        </ul>
+                        
+                        <div style="margin-top: var(--space-20); padding-top: var(--space-16); border-top: 1px solid var(--color-card-border-inner);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-8);">
+                                <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Current Balance</span>
+                                <span style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--color-success);">$8,750</span>
+                            </div>
+                            <button class="btn btn--primary btn--full-width">Add Funds</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Save Settings -->
+            <div class="save-settings">
+                <button type="button" class="btn btn--outline">Reset to Default</button>
+                <button type="button" class="btn btn--primary">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wallet selection functionality
+        const walletOptions = document.querySelectorAll('.wallet-option');
+        walletOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                walletOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // Toggle functionality
+        const toggleInputs = document.querySelectorAll('.toggle-input');
+        toggleInputs.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                console.log(`Toggle ${this.closest('.currency-item, .notification-item').querySelector('h4').textContent}: ${this.checked}`);
+            });
+        });
+
+        // Save settings
+        document.querySelector('.save-settings .btn--primary').addEventListener('click', function() {
+            // Collect all settings data
+            const selectedWallet = document.querySelector('.wallet-option.selected .wallet-name').textContent;
+            const walletAddress = document.querySelector('.address-input input').value;
+            
+            const enabledCurrencies = [];
+            document.querySelectorAll('.currency-item').forEach(item => {
+                const toggle = item.querySelector('.toggle-input');
+                if (toggle.checked) {
+                    enabledCurrencies.push(item.querySelector('h4').textContent);
+                }
+            });
+            
+            const notificationSettings = {};
+            document.querySelectorAll('.notification-item').forEach(item => {
+                const setting = item.querySelector('h4').textContent;
+                const enabled = item.querySelector('.toggle-input').checked;
+                notificationSettings[setting] = enabled;
+            });
+            
+            // Simulate saving
+            this.textContent = 'Saving...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.textContent = 'Saved!';
+                setTimeout(() => {
+                    this.textContent = 'Save Settings';
+                    this.disabled = false;
+                }, 1000);
+            }, 1500);
+            
+            console.log('Saving settings:', {
+                wallet: selectedWallet,
+                address: walletAddress,
+                currencies: enabledCurrencies,
+                notifications: notificationSettings
+            });
+        });
+
+        // Reset to default
+        document.querySelector('.save-settings .btn--outline').addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset all settings to default?')) {
+                // Reset toggles to default state
+                toggleInputs.forEach((toggle, index) => {
+                    // Default: first 3 currencies and all notifications enabled
+                    if (toggle.closest('.currency-item')) {
+                        toggle.checked = index < 2; // ETH and USDC enabled by default
+                    } else {
+                        toggle.checked = true; // All notifications enabled by default
+                    }
+                });
+                
+                // Reset wallet selection
+                walletOptions.forEach(opt => opt.classList.remove('selected'));
+                walletOptions[0].classList.add('selected'); // MetaMask by default
+                
+                alert('Settings reset to default values');
+            }
+        });
+    </script>
+
+    <script src="complete-script.js"></script>
+</body>
+</html>

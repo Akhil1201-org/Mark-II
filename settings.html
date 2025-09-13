@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings - Mark II</title>
+    <link rel="stylesheet" href="../complete-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .settings-container {
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+        
+        .settings-header {
+            text-align: center;
+            margin-bottom: var(--space-32);
+        }
+        
+        .settings-title {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .settings-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .settings-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: var(--space-32);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .settings-nav {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            padding: var(--space-24);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .nav-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: var(--space-8);
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-12) var(--space-16);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-base);
+            transition: all var(--duration-normal) var(--ease-standard);
+            font-size: var(--font-size-md);
+        }
+        
+        .nav-link:hover {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+        
+        .nav-link.active {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+        
+        .nav-icon {
+            width: var(--space-16);
+            font-size: var(--font-size-sm);
+        }
+        
+        .settings-main {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-card-border);
+            overflow: hidden;
+        }
+        
+        .settings-section {
+            padding: var(--space-32);
+            border-bottom: 1px solid var(--color-card-border-inner);
+            display: none;
+        }
+        
+        .settings-section.active {
+            display: block;
+        }
+        
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-header {
+            margin-bottom: var(--space-24);
+        }
+        
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-desc {
+            font-size: var(--font-size-md);
+            color: var(--color-text-secondary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-20);
+            margin-bottom: var(--space-20);
+        }
+        
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-24);
+            margin-bottom: var(--space-32);
+            padding: var(--space-24);
+            background: var(--color-secondary);
+            border-radius: var(--radius-lg);
+        }
+        
+        .avatar-image {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-btn-primary-text);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .avatar-info h3 {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin: 0 0 var(--space-8) 0;
+        }
+        
+        .avatar-meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-16);
+        }
+        
+        .avatar-actions {
+            display: flex;
+            gap: var(--space-12);
+        }
+        
+        .btn-upload {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            border: none;
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .btn-upload:hover {
+            background: var(--color-primary-hover);
+        }
+        
+        .btn-remove {
+            background: transparent;
+            color: var(--color-text-secondary);
+            border: 1px solid var(--color-border);
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-base);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .btn-remove:hover {
+            color: var(--color-error);
+            border-color: var(--color-error);
+        }
+        
+        .security-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-20);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-16);
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .security-item:hover {
+            background: var(--color-secondary);
+        }
+        
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-16);
+        }
+        
+        .security-icon {
+            width: var(--space-32);
+            height: var(--space-32);
+            border-radius: var(--radius-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-sm);
+        }
+        
+        .security-icon.enabled {
+            background: var(--color-success);
+            color: white;
+        }
+        
+        .security-icon.disabled {
+            background: var(--color-secondary);
+            color: var(--color-text-secondary);
+        }
+        
+        .security-details h4 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+            margin: 0 0 var(--space-4) 0;
+        }
+        
+        .security-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .security-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+        }
+        
+        .status-badge {
+            padding: var(--space-4) var(--space-12);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .status-badge.enabled {
+            background: rgba(var(--color-success-rgb), 0.15);
+            color: var(--color-success);
+        }
+        
+        .status-badge.disabled {
+            background: var(--color-secondary);
+            color: var(--color-text-secondary);
+        }
+        
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-16) 0;
+            border-bottom: 1px solid var(--color-card-border-inner);
+        }
+        
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+        
+        .preference-info h4 {
+            font-size: var(--font-size-md);
+            color: var(--color-text);
+            margin: 0 0 var(--space-4) 0;
+        }
+        
+        .preference-desc {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-border);
+            transition: all var(--duration-normal) var(--ease-standard);
+            border-radius: var(--radius-full);
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background: white;
+            transition: all var(--duration-normal) var(--ease-standard);
+            border-radius: var(--radius-full);
+        }
+        
+        .toggle-input:checked + .toggle-slider {
+            background: var(--color-primary);
+        }
+        
+        .toggle-input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .danger-zone {
+            background: rgba(var(--color-error-rgb), 0.05);
+            border: 1px solid rgba(var(--color-error-rgb), 0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--space-24);
+            margin-top: var(--space-32);
+        }
+        
+        .danger-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-error);
+            margin-bottom: var(--space-16);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+        
+        .danger-actions {
+            display: flex;
+            gap: var(--space-16);
+        }
+        
+        .btn-danger {
+            background: var(--color-error);
+            color: white;
+            border: none;
+            padding: var(--space-12) var(--space-20);
+            border-radius: var(--radius-base);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all var(--duration-normal) var(--ease-standard);
+        }
+        
+        .btn-danger:hover {
+            background: var(--color-error);
+            opacity: 0.9;
+        }
+        
+        .save-bar {
+            position: sticky;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--color-surface);
+            border-top: 1px solid var(--color-card-border-inner);
+            padding: var(--space-20) var(--space-32);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-16);
+            z-index: 10;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-nav {
+                position: static;
+                margin-bottom: var(--space-24);
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .avatar-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <span class="logo-text">Mark II</span>
+                </div>
+                
+                <nav class="nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="../company.html" class="nav-link">Company</a>
+                    <a href="../freelancer.html" class="nav-link">Freelancer</a>
+                    <a href="../create.html" class="nav-link">Create Bounty</a>
+                    <a href="../upload.html" class="nav-link">Upload</a>
+                    <a href="../payment.html" class="nav-link">Payment</a>
+                    <a href="../faq.html" class="nav-link">Help</a>
+                </nav>
+                
+                <div class="nav-item">
+                    <a href="../settings.html" class="nav-link">
+                        <i class="fas fa-user-circle"></i> Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Settings Content -->
+    <div class="settings-container">
+        <div class="container">
+            <div class="settings-header">
+                <h1 class="settings-title">Account Settings</h1>
+                <p class="settings-subtitle">Manage your profile, security, and preferences</p>
+            </div>
+
+            <div class="settings-content">
+                <!-- Settings Navigation -->
+                <nav class="settings-nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#profile" class="nav-link active" data-section="profile">
+                                <i class="fas fa-user nav-icon"></i>
+                                Profile
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#security" class="nav-link" data-section="security">
+                                <i class="fas fa-shield-alt nav-icon"></i>
+                                Security
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#notifications" class="nav-link" data-section="notifications">
+                                <i class="fas fa-bell nav-icon"></i>
+                                Notifications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#preferences" class="nav-link" data-section="preferences">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Preferences
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#privacy" class="nav-link" data-section="privacy">
+                                <i class="fas fa-eye-slash nav-icon"></i>
+                                Privacy
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Settings Main Content -->
+                <div class="settings-main">
+                    <!-- Profile Section -->
+                    <section class="settings-section active" id="profile">
+                        <div class="section-header">
+                            <h2 class="section-title">Profile Information</h2>
+                            <p class="section-desc">Update your profile details and avatar</p>
+                        </div>
+                        
+                        <div class="avatar-section">
+                            <div class="avatar-image">AU</div>
+                            <div class="avatar-info">
+                                <h3>Akhil Upadhyay</h3>
+                                <div class="avatar-meta">Security Researcher • Member since 2023</div>
+                                <div class="avatar-actions">
+                                    <button class="btn-upload">Upload Photo</button>
+                                    <button class="btn-remove">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form>
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-control" value="Akhil" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" value="Upadhyay" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" value="tommargui@gmail.com" required>
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label">Username</label>
+                                    <input type="text" class="form-control" value="@akhil1201" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row full">
+                                <div class="form-field">
+                                    <label class="form-label">Bio</label>
+                                    <textarea class="form-control" rows="4" placeholder="Tell us about yourself...">Cybersecurity enthusiast with 5+ years of experience in bug bounty programs. Specialized in smart contract auditing and web application security.</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-field">
+                                    <label class="form-label">Location</label>
+                                    <input type="text" class="form-control" value="Haldia, West Bengal">
+                                </div>
+                                <div class="form-field">
+                                    <label class="form-label">Website</label>
+                                    <input type="url" class="form-control" placeholder="https://yourwebsite.com">
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Security Section -->
+                    <section class="settings-section" id="security">
+                        <div class="section-header">
+                            <h2 class="section-title">Security Settings</h2>
+                            <p class="section-desc">Manage your account security and authentication</p>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon enabled">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                                <div class="security-details">
+                                    <h4>Password</h4>
+                                    <div class="security-desc">Last changed 30 days ago</div>
+                                </div>
+                            </div>
+                            <div class="security-status">
+                                <span class="status-badge enabled">Strong</span>
+                                <button class="btn btn--outline btn--sm">Change</button>
+                            </div>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon enabled">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class="security-details">
+                                    <h4>Two-Factor Authentication</h4>
+                                    <div class="security-desc">SMS authentication enabled</div>
+                                </div>
+                            </div>
+                            <div class="security-status">
+                                <span class="status-badge enabled">Enabled</span>
+                                <button class="btn btn--outline btn--sm">Manage</button>
+                            </div>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon disabled">
+                                    <i class="fas fa-fingerprint"></i>
+                                </div>
+                                <div class="security-details">
+                                    <h4>Biometric Authentication</h4>
+                                    <div class="security-desc">Use fingerprint or face recognition</div>
+                                </div>
+                            </div>
+                            <div class="security-status">
+                                <span class="status-badge disabled">Disabled</span>
+                                <button class="btn btn--primary btn--sm">Enable</button>
+                            </div>
+                        </div>
+                        
+                        <div class="security-item">
+                            <div class="security-info">
+                                <div class="security-icon enabled">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="security-details">
+                                    <h4>Login Alerts</h4>
+                                    <div class="security-desc">Get notified of new logins</div>
+                                </div>
+                            </div>
+                            <div class="security-status">
+                                <span class="status-badge enabled">Enabled</span>
+                                <button class="btn btn--outline btn--sm">Configure</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Notifications Section -->
+                    <section class="settings-section" id="notifications">
+                        <div class="section-header">
+                            <h2 class="section-title">Notification Preferences</h2>
+                            <p class="section-desc">Choose what notifications you want to receive</p>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Email Notifications</h4>
+                                <div class="preference-desc">Receive updates via email</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Push Notifications</h4>
+                                <div class="preference-desc">Browser and mobile push notifications</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>New Bounty Programs</h4>
+                                <div class="preference-desc">Get notified of new bounty opportunities</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Report Updates</h4>
+                                <div class="preference-desc">Updates on your submitted reports</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Payment Notifications</h4>
+                                <div class="preference-desc">Alerts for received payments</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Weekly Digest</h4>
+                                <div class="preference-desc">Summary of platform activity</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Preferences Section -->
+                    <section class="settings-section" id="preferences">
+                        <div class="section-header">
+                            <h2 class="section-title">Platform Preferences</h2>
+                            <p class="section-desc">Customize your platform experience</p>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label class="form-label">Language</label>
+                                <select class="form-control">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                    <option value="zh">Chinese</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Timezone</label>
+                                <select class="form-control">
+                                    <option value="utc">UTC</option>
+                                    <option value="pst">Pacific Time (PT)</option>
+                                    <option value="est">Eastern Time (ET)</option>
+                                    <option value="gmt">Greenwich Mean Time (GMT)</option>
+                                    <option value="cet">Central European Time (CET)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Dark Mode</h4>
+                                <div class="preference-desc">Use dark theme for the interface</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Auto-refresh Dashboard</h4>
+                                <div class="preference-desc">Automatically refresh data every 30 seconds</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Show Advanced Features</h4>
+                                <div class="preference-desc">Display advanced tools and settings</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Privacy Section -->
+                    <section class="settings-section" id="privacy">
+                        <div class="section-header">
+                            <h2 class="section-title">Privacy Settings</h2>
+                            <p class="section-desc">Control your privacy and data sharing preferences</p>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Public Profile</h4>
+                                <div class="preference-desc">Make your profile visible to other users</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Show Activity Status</h4>
+                                <div class="preference-desc">Let others see when you're active</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Analytics & Performance</h4>
+                                <div class="preference-desc">Help improve the platform with usage data</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <div class="preference-info">
+                                <h4>Marketing Communications</h4>
+                                <div class="preference-desc">Receive updates about new features and events</div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" class="toggle-input">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="danger-zone">
+                            <h3 class="danger-title">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Danger Zone
+                            </h3>
+                            <p style="color: var(--color-text-secondary); margin-bottom: var(--space-20);">These actions cannot be undone. Please proceed with caution.</p>
+                            <div class="danger-actions">
+                                <button class="btn-danger">Export Data</button>
+                                <button class="btn-danger">Delete Account</button>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Save Bar -->
+                    <div class="save-bar">
+                        <button type="button" class="btn btn--outline">Cancel</button>
+                        <button type="button" class="btn btn--primary">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        const navLinks = document.querySelectorAll('.nav-link[data-section]');
+        const sections = document.querySelectorAll('.settings-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetSection = this.getAttribute('data-section');
+                
+                // Update active nav link
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show target section
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById(targetSection).classList.add('active');
+            });
+        });
+
+        // Toggle functionality
+        const toggles = document.querySelectorAll('.toggle-input');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                console.log(`Setting changed: ${this.checked}`);
+            });
+        });
+
+        // Save changes
+        document.querySelector('.save-bar .btn--primary').addEventListener('click', function() {
+            this.textContent = 'Saving...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.textContent = 'Saved!';
+                setTimeout(() => {
+                    this.textContent = 'Save Changes';
+                    this.disabled = false;
+                }, 1000);
+            }, 1500);
+        });
+
+        // Avatar upload
+        document.querySelector('.btn-upload').addEventListener('click', function() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.click();
+        });
+
+        // Danger zone actions
+        document.querySelector('.danger-actions .btn-danger:first-child').addEventListener('click', function() {
+            alert('Exporting your data... This may take a few minutes.');
+        });
+
+        document.querySelector('.danger-actions .btn-danger:last-child').addEventListener('click', function() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                if (confirm('This will permanently delete all your data, reports, and rewards. Type DELETE to confirm.')) {
+                    alert('Account deletion process initiated. You will receive an email with further instructions.');
+                }
+            }
+        });
+    </script>
+
+    <script src="complete-script.js"></script>
+</body>
+</html>
